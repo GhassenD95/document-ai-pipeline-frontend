@@ -1,0 +1,109 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap');
+@import "tailwindcss";
+
+@theme {
+  /* Colors from Stitch design system */
+  --color-primary: #004ac6;
+  --color-primary-container: #2563eb;
+  --color-primary-fixed: #dbe1ff;
+  --color-primary-fixed-dim: #b4c5ff;
+  --color-on-primary: #ffffff;
+  --color-on-primary-container: #eeefff;
+  --color-on-primary-fixed: #00174b;
+  --color-on-primary-fixed-variant: #003ea8;
+
+  --color-secondary: #5c5f60;
+  --color-secondary-fixed: #e1e3e4;
+  --color-secondary-fixed-dim: #c5c7c8;
+  --color-on-secondary: #ffffff;
+  --color-on-secondary-container: #626566;
+  --color-on-secondary-fixed: #191c1d;
+  --color-on-secondary-fixed-variant: #454748;
+
+  --color-tertiary: #943700;
+  --color-tertiary-container: #bc4800;
+  --color-tertiary-fixed: #ffdbcd;
+  --color-tertiary-fixed-dim: #ffb596;
+  --color-on-tertiary: #ffffff;
+  --color-on-tertiary-container: #ffede6;
+  --color-on-tertiary-fixed: #360f00;
+  --color-on-tertiary-fixed-variant: #7d2d00;
+
+  --color-error: #ef4444;
+  --color-error-container: #ffdad6;
+  --color-on-error: #ffffff;
+  --color-on-error-container: #93000a;
+
+  --color-success: #10b981;
+  --color-warning: #f59e0b;
+
+  --color-background: #f8f9ff;
+  --color-surface: #ffffff;
+  --color-surface-dim: #cbdbf5;
+  --color-surface-bright: #f8f9ff;
+  --color-surface-container-lowest: #ffffff;
+  --color-surface-container-low: #eff4ff;
+  --color-surface-container: #e5eeff;
+  --color-surface-container-high: #dce9ff;
+  --color-surface-container-highest: #d3e4fe;
+  --color-surface-variant: #d3e4fe;
+  --color-on-surface: #0b1c30;
+  --color-on-surface-variant: #434655;
+
+  --color-inverse-surface: #213145;
+  --color-inverse-on-surface: #eaf1ff;
+  --color-inverse-primary: #b4c5ff;
+
+  --color-outline: #737686;
+  --color-outline-variant: #c3c6d7;
+  --color-border: #e2e8f0;
+
+  --color-surface-tint: #0053db;
+
+  /* Font families */
+  --font-headline-lg: 'Inter', sans-serif;
+  --font-headline-md: 'Inter', sans-serif;
+  --font-body-lg: 'Inter', sans-serif;
+  --font-body-md: 'Inter', sans-serif;
+  --font-body-sm: 'Inter', sans-serif;
+  --font-label-md: 'Inter', sans-serif;
+  --font-label-sm: 'Inter', sans-serif;
+  --font-code-sm: 'JetBrains Mono', monospace;
+
+  /* Font sizes */
+  --text-headline-lg: 24px;
+  --text-headline-md: 20px;
+  --text-body-lg: 16px;
+  --text-body-md: 14px;
+  --text-body-sm: 13px;
+  --text-label-md: 12px;
+  --text-label-sm: 11px;
+  --text-code-sm: 13px;
+
+  /* Spacing */
+  --spacing-margin-page: 2rem;
+  --spacing-container-max: 1280px;
+  --spacing-stack-sm: 0.5rem;
+  --spacing-stack-md: 1rem;
+  --spacing-stack-lg: 2rem;
+  --spacing-gutter: 1.5rem;
+
+  /* Border radius */
+  --radius-lg: 0.5rem;
+  --radius-xl: 0.75rem;
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  background-color: var(--color-background);
+  color: var(--color-on-surface);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.material-symbols-outlined {
+  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+  display: inline-block;
+  vertical-align: middle;
+  line-height: 1;
+}
