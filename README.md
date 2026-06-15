@@ -1,6 +1,8 @@
 # Document AI Pipeline — Frontend
 
-React + TypeScript + Vite + Tailwind CSS v4 frontend for the Document AI Pipeline.
+React + TypeScript frontend for the Document AI Pipeline. Dashboard with real-time status polling, drag-and-drop upload, full-text search, and a detail view showing raw OCR text alongside LLM-extracted fields.
+
+Part of a full-stack portfolio project: upload PDF invoices → Tesseract OCR → Groq LLM extraction → structured data.
 
 ## Quick Start
 
@@ -9,13 +11,12 @@ npm install
 npm run dev
 ```
 
-Requires the backend running at `http://localhost:8081` (configurable via `VITE_API_BASE_URL`).
+Requires the backend at `http://localhost:8081` (configurable via `VITE_API_BASE_URL`).
 
-## Build for Production
+## Build
 
 ```bash
-npm run build
-# Output in dist/
+npm run build   # output in dist/
 ```
 
 ## Docker
@@ -25,4 +26,11 @@ docker build -t docai-frontend --build-arg VITE_API_BASE_URL="" .
 docker run -p 5173:80 docai-frontend
 ```
 
-The Nginx config proxies `/api` requests to the backend container (named `backend` in the compose network).
+The Nginx config proxies `/api` to the backend container.
+
+## Tech Stack
+
+- React 19, TypeScript, Vite
+- Tailwind CSS v4 (Stitch design tokens)
+- React Router v7
+- TanStack Query (auto-refetch, mutations)
