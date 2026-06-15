@@ -1,6 +1,6 @@
 import type { Document, UploadResponse } from '@/types/document';
 
-const API_BASE = 'http://localhost:8081';
+const API_BASE = import.meta.env.VITE_API_BASE_URL ?? 'http://localhost:8081';
 
 export async function fetchDocuments(): Promise<Document[]> {
   const res = await fetch(`${API_BASE}/api/documents`);
