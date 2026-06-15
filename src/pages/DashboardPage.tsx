@@ -1,11 +1,13 @@
-import { useState, useCallback } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useQuery } from '@tanstack/react-query';
-import { fetchDocuments, searchDocuments } from '@/services/api';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { fetchDocuments, searchDocuments, generateSamplePdf, getDownloadUrl } from '@/services/api';
 import type { Document } from '@/types/document';
 import { Badge } from '@/components/ui/Badge';
+import { Button } from '@/components/ui/Button';
 import { Skeleton } from '@/components/ui/Skeleton';
 import { Card } from '@/components/ui/Card';
+import { showToast } from '@/components/ui/Toast';
 
 function formatRelative(dateStr: string): string {
   const diff = Date.now() - new Date(dateStr).getTime();
@@ -25,18 +27,26 @@ function formatSize(bytes: number): string {
 
 export function DashboardPage() {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const [query, setQuery] = useState('');
 
   const { data: documents = [], isLoading } = useQuery<Document[]>({
     queryKey: ['documents', query],
     queryFn: () => query.trim() ? searchDocuments(query.trim()) : fetchDocuments(),
-    refetchInterval: (query) => {
-      const docs = query.state.data ?? [];
+    refetchInterval: (q) => {
+      const docs = q.state.data ?? [];
       return docs.some(d => d.status === 'PENDING' || d.status === 'PROCESSING') ? 4000 : false;
     },
   });
 
-  const clearSearch = useCallback(() => setQuery(''), []);
+  const sampleMutation = useMutation({
+    mutationFn: generateSamplePdf,
+    onSuccess: () => {
+      showToast('Sample invoice generated! Processing started.');
+      queryClient.invalidateQueries({ queryKey: ['documents'] });
+    },
+    onError: () => showToast('Failed to generate sample PDF'),
+  });
 
   return (
     <div className="max-w-container-max mx-auto space-y-8">
@@ -58,15 +68,17 @@ export function DashboardPage() {
             type="text"
           />
         </div>
-        {query.trim() && (
-          <button
-            onClick={clearSearch}
-            className="flex items-center gap-1 px-3 py-2 rounded-lg bg-secondary-container text-on-secondary-fixed hover:bg-outline-variant transition-colors font-label-md text-label-md cursor-pointer"
+        <div className="flex items-center gap-3 w-full md:w-auto">
+          <Button
+            variant="outline"
+            size="md"
+            icon={<span className="material-symbols-outlined text-[18px]">auto_fix_high</span>}
+            loading={sampleMutation.isPending}
+            onClick={() => sampleMutation.mutate()}
           >
-            <span className="material-symbols-outlined text-[18px]">close</span>
-            Clear search
-          </button>
-        )}
+            Generate Sample
+          </Button>
+        </div>
       </div>
 
       {query.trim() && (
@@ -94,7 +106,7 @@ export function DashboardPage() {
                       <td className="px-6 py-5"><Skeleton className="h-5 w-64" /></td>
                       <td className="px-6 py-5"><Skeleton className="h-6 w-28 rounded-full" /></td>
                       <td className="px-6 py-5"><Skeleton className="h-4 w-20" /></td>
-                      <td className="px-6 py-5"><Skeleton className="h-4 w-12 ml-auto" /></td>
+                      <td className="px-6 py-5"><Skeleton className="h-4 w-24 ml-auto" /></td>
                     </tr>
                   ))
                 : documents.length === 0
@@ -104,8 +116,19 @@ export function DashboardPage() {
                         <div className="flex flex-col items-center gap-4">
                           <span className="material-symbols-outlined text-[48px] text-outline-variant">description</span>
                           <p className="font-body-md text-body-md text-on-surface-variant">
-                            {query.trim() ? `No documents match "${query}"` : 'No documents yet. Upload your first PDF to get started.'}
+                            {query.trim() ? `No documents match "${query}"` : 'No documents yet. Upload your first PDF or generate a sample invoice.'}
                           </p>
+                          {!query.trim() && (
+                            <Button
+                              variant="primary"
+                              size="lg"
+                              icon={<span className="material-symbols-outlined text-[20px]">auto_fix_high</span>}
+                              loading={sampleMutation.isPending}
+                              onClick={() => sampleMutation.mutate()}
+                            >
+                              Generate Sample Invoice
+                            </Button>
+                          )}
                         </div>
                       </td>
                     </tr>
@@ -128,9 +151,21 @@ export function DashboardPage() {
                         <p className="font-body-sm text-body-sm text-on-surface-variant">{formatRelative(doc.createdAt)}</p>
                       </td>
                       <td className="px-6 py-5 text-right">
-                        <span className="text-primary font-label-md text-label-md inline-flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                          View <span className="material-symbols-outlined text-[18px]">chevron_right</span>
-                        </span>
+                        <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                          <a
+                            href={getDownloadUrl(doc.id)}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-on-surface-variant hover:text-primary font-label-sm text-label-sm flex items-center gap-1"
+                            onClick={e => e.stopPropagation()}
+                          >
+                            <span className="material-symbols-outlined text-[16px]">visibility</span>
+                            PDF
+                          </a>
+                          <span className="text-primary font-label-md text-label-md inline-flex items-center gap-1">
+                            View <span className="material-symbols-outlined text-[18px]">chevron_right</span>
+                          </span>
+                        </div>
                       </td>
                     </tr>
                   ))}

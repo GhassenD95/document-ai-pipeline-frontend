@@ -33,3 +33,15 @@ export async function uploadDocument(file: File): Promise<UploadResponse> {
   }
   return res.json();
 }
+
+export async function generateSamplePdf(): Promise<UploadResponse> {
+  const res = await fetch(`${API_BASE}/api/documents/generate-sample`, {
+    method: 'POST',
+  });
+  if (!res.ok) throw new Error('Failed to generate sample PDF');
+  return res.json();
+}
+
+export function getDownloadUrl(id: string): string {
+  return `${API_BASE}/api/documents/${id}/download`;
+}

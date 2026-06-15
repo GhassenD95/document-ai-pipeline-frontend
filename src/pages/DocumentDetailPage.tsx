@@ -5,7 +5,9 @@ import type { Document, ExtractedFields } from '@/types/document';
 import { Badge } from '@/components/ui/Badge';
 import { Card } from '@/components/ui/Card';
 import { Skeleton } from '@/components/ui/Skeleton';
+import { Button } from '@/components/ui/Button';
 import { showToast } from '@/components/ui/Toast';
+import { getDownloadUrl } from '@/services/api';
 
 function formatSize(bytes: number): string {
   if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(0)} KB`;
@@ -112,7 +114,14 @@ export function DocumentDetailPage() {
               </div>
             </div>
           </div>
-          <Badge status={doc.status} size="md" />
+          <div className="flex items-center gap-3">
+            <a href={getDownloadUrl(doc.id)} target="_blank" rel="noopener noreferrer">
+              <Button variant="outline" size="sm" icon={<span className="material-symbols-outlined text-[18px]">visibility</span>}>
+                View PDF
+              </Button>
+            </a>
+            <Badge status={doc.status} size="md" />
+          </div>
         </div>
       </Card>
 
