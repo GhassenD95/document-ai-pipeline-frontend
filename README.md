@@ -34,3 +34,8 @@ The Nginx config proxies `/api` to the backend container.
 - Tailwind CSS v4 (Stitch design tokens)
 - React Router v7
 - TanStack Query (auto-refetch, mutations)
+
+<img width="1917" height="893" alt="Screenshot from 2026-06-15 19-58-16" src="https://github.com/user-attachments/assets/a3a81e57-8cc0-4bdf-8d36-6d7372a554bf" />
+
+<img width="1917" height="893" alt="Screenshot from 2026-06-15 19-58-38" src="https://github.com/user-attachments/assets/feb30708-9dbf-4fbd-a20d-e6a483def5d2" />
+
