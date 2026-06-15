@@ -45,3 +45,13 @@ export async function generateSamplePdf(): Promise<UploadResponse> {
 export function getDownloadUrl(id: string): string {
   return `${API_BASE}/api/documents/${id}/download`;
 }
+
+export async function retryDocument(id: string): Promise<void> {
+  const res = await fetch(`${API_BASE}/api/documents/${id}/retry`, { method: 'POST' });
+  if (!res.ok) throw new Error('Failed to retry document');
+}
+
+export async function deleteDocument(id: string): Promise<void> {
+  const res = await fetch(`${API_BASE}/api/documents/${id}`, { method: 'DELETE' });
+  if (!res.ok) throw new Error('Failed to delete document');
+}

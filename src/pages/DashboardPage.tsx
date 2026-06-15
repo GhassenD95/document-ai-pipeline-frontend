@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { fetchDocuments, searchDocuments, generateSamplePdf, getDownloadUrl } from '@/services/api';
+import { fetchDocuments, searchDocuments, generateSamplePdf, getDownloadUrl, retryDocument, deleteDocument } from '@/services/api';
 import type { Document } from '@/types/document';
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
@@ -47,6 +47,31 @@ export function DashboardPage() {
     },
     onError: () => showToast('Failed to generate sample PDF'),
   });
+
+  const retryMutation = useMutation({
+    mutationFn: retryDocument,
+    onSuccess: () => {
+      showToast('Document re-queued for processing.');
+      queryClient.invalidateQueries({ queryKey: ['documents'] });
+    },
+    onError: () => showToast('Failed to retry document'),
+  });
+
+  const deleteMutation = useMutation({
+    mutationFn: deleteDocument,
+    onSuccess: () => {
+      showToast('Document deleted.');
+      queryClient.invalidateQueries({ queryKey: ['documents'] });
+    },
+    onError: () => showToast('Failed to delete document'),
+  });
+
+  const handleDelete = (e: React.MouseEvent, id: string, fileName: string) => {
+    e.stopPropagation();
+    if (window.confirm(`Delete "${fileName}"?`)) {
+      deleteMutation.mutate(id);
+    }
+  };
 
   return (
     <div className="max-w-container-max mx-auto space-y-8">
@@ -162,6 +187,21 @@ export function DashboardPage() {
                             <span className="material-symbols-outlined text-[16px]">visibility</span>
                             PDF
                           </a>
+                          {doc.status === 'FAILED' && (
+                            <button
+                              onClick={e => { e.stopPropagation(); retryMutation.mutate(doc.id); }}
+                              className="text-warning hover:text-amber-600 font-label-sm text-label-sm flex items-center gap-1 cursor-pointer"
+                            >
+                              <span className="material-symbols-outlined text-[16px]">refresh</span>
+                              Retry
+                            </button>
+                          )}
+                          <button
+                            onClick={e => handleDelete(e, doc.id, doc.fileName)}
+                            className="text-on-surface-variant hover:text-error font-label-sm text-label-sm flex items-center gap-1 cursor-pointer"
+                          >
+                            <span className="material-symbols-outlined text-[16px]">delete</span>
+                          </button>
                           <span className="text-primary font-label-md text-label-md inline-flex items-center gap-1">
                             View <span className="material-symbols-outlined text-[18px]">chevron_right</span>
                           </span>
