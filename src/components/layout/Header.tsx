@@ -1,10 +1,22 @@
 import { Button } from '@/components/ui/Button';
+import { useBackendStatus } from '@/hooks/useBackendStatus';
+import type { BackendStatus } from '@/hooks/useBackendStatus';
+
+const statusConfig: Record<BackendStatus, { color: string; label: string }> = {
+  checking: { color: 'bg-yellow-400', label: 'Checking...' },
+  connected: { color: 'bg-success', label: 'Connected' },
+  starting: { color: 'bg-warning', label: 'Waking up...' },
+  offline: { color: 'bg-error', label: 'Offline' },
+};
 
 interface HeaderProps {
   onUploadClick: () => void;
 }
 
 export function Header({ onUploadClick }: HeaderProps) {
+  const backendStatus = useBackendStatus();
+  const { color, label } = statusConfig[backendStatus];
+
   return (
     <header className="h-16 w-full fixed top-0 left-0 bg-surface border-b border-border shadow-sm z-40">
       <div className="flex items-center justify-between h-full max-w-container-max mx-auto px-margin-page">
@@ -14,9 +26,15 @@ export function Header({ onUploadClick }: HeaderProps) {
           </div>
           <h1 className="font-headline-md text-headline-md font-semibold text-on-surface">Doc AI Pipeline</h1>
         </div>
-        <Button icon={<span className="material-symbols-outlined text-[18px]">upload_file</span>} onClick={onUploadClick}>
-          Upload PDF
-        </Button>
+        <div className="flex items-center gap-4">
+          <div className="flex items-center gap-1.5 font-label-sm text-label-sm text-on-surface-variant">
+            <span className={`w-2 h-2 rounded-full ${color}`} />
+            {label}
+          </div>
+          <Button icon={<span className="material-symbols-outlined text-[18px]">upload_file</span>} onClick={onUploadClick}>
+            Upload PDF
+          </Button>
+        </div>
       </div>
     </header>
   );

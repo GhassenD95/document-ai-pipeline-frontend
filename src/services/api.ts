@@ -55,3 +55,12 @@ export async function deleteDocument(id: string): Promise<void> {
   const res = await fetch(`${API_BASE}/api/documents/${id}`, { method: 'DELETE' });
   if (!res.ok) throw new Error('Failed to delete document');
 }
+
+export async function checkHealth(): Promise<boolean> {
+  try {
+    const res = await fetch(`${API_BASE}/api/documents/health`, { method: 'GET', signal: AbortSignal.timeout(5000) });
+    return res.ok;
+  } catch {
+    return false;
+  }
+}

@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/Button';
 import { Skeleton } from '@/components/ui/Skeleton';
 import { Card } from '@/components/ui/Card';
 import { showToast } from '@/components/ui/Toast';
+import { useBackendStatus } from '@/hooks/useBackendStatus';
 
 function formatRelative(dateStr: string): string {
   const diff = Date.now() - new Date(dateStr).getTime();
@@ -29,6 +30,7 @@ export function DashboardPage() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const [query, setQuery] = useState('');
+  const backendStatus = useBackendStatus();
 
   const { data: documents = [], isLoading } = useQuery<Document[]>({
     queryKey: ['documents', query],
@@ -81,6 +83,26 @@ export function DashboardPage() {
           Automated OCR and data extraction pipeline. Upload your PDF documents to instantly process structured data.
         </p>
       </section>
+
+      {backendStatus === 'starting' && (
+        <div className="flex items-center gap-3 px-4 py-3 bg-warning/10 border border-warning/30 rounded-xl text-sm text-on-surface">
+          <span className="material-symbols-outlined text-warning text-[20px]">hourglass_top</span>
+          <div>
+            <p className="font-semibold">Backend is starting up...</p>
+            <p className="text-on-surface-variant text-xs">The free-tier server was asleep. This takes about a minute — try again shortly.</p>
+          </div>
+        </div>
+      )}
+
+      {backendStatus === 'offline' && (
+        <div className="flex items-center gap-3 px-4 py-3 bg-error/10 border border-error/30 rounded-xl text-sm text-on-surface">
+          <span className="material-symbols-outlined text-error text-[20px]">cloud_off</span>
+          <div>
+            <p className="font-semibold">Backend unreachable</p>
+            <p className="text-on-surface-variant text-xs">Could not connect to the server. Please check that the backend is running.</p>
+          </div>
+        </div>
+      )}
 
       <div className="flex flex-col md:flex-row gap-4 items-center justify-between">
         <div className="relative w-full md:max-w-md">
