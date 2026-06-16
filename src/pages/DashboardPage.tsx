@@ -215,7 +215,7 @@ export function DashboardPage() {
         {!isLoading && documents.length > 0 && (
           <div className="px-6 py-4 bg-surface-container-lowest border-t border-border flex items-center justify-between">
             <p className="font-body-sm text-body-sm text-on-surface-variant">
-              Showing 1 to {documents.length} of {documents.length} document{documents.length !== 1 ? 's' : ''}
+              {documents.length} document{documents.length !== 1 ? 's' : ''}
             </p>
           </div>
         )}
