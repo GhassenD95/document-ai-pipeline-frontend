@@ -58,7 +58,7 @@ export async function deleteDocument(id: string): Promise<void> {
 
 export async function checkHealth(): Promise<boolean> {
   try {
-    const res = await fetch(`${API_BASE}/api/health`, { method: 'GET', signal: AbortSignal.timeout(5000) });
+    const res = await fetch(`${API_BASE}/api/documents`, { method: 'GET', signal: AbortSignal.timeout(8000) });
     return res.ok;
   } catch {
     return false;
